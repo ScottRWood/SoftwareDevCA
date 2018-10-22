@@ -1,15 +1,16 @@
 import java.io.File;
-import java.nio.file.Files;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Deque;
+import java.util.LinkedList;
+import java.util.Stack;
 import java.util.Scanner;
 
 public class CardGame {
 
-    private static ArrayList<Card> readPackFile(String path, int players) throws java.io.IOException, Exception {
+    private static Stack<Card> readPackFile(String path, int players) throws java.io.IOException, Exception {
         Scanner s = new Scanner(new File(path));
         ArrayList<Integer> values = new ArrayList<Integer>();
-        ArrayList<Card> pack = new ArrayList<Card>();
+        Stack<Card> pack = new Stack<Card>();
         int a;
 
         while (s.hasNext()) {
@@ -27,9 +28,9 @@ public class CardGame {
         
         s.close();
         
-        if (values.size() % 8 == 0) {
+        if (values.size()  == 8 * players) {
             for (Integer i: values) {
-                pack.add(new Card(i));
+                pack.push(new Card(i));
                 System.out.println(i);
             }
         } else {
@@ -41,10 +42,13 @@ public class CardGame {
 
     public static void main(String[] args) {
         Scanner reader = new Scanner(System.in);
-        ArrayList<Card> pack = new ArrayList<Card>();
+        Stack<Card> pack;
 
         System.out.println("Please enter the number of player: ");
         int players = reader.nextInt();
+
+        ArrayList<Deque<Card>> decks = new ArrayList<>(players);
+        ArrayList<ArrayList<Card>> hands = new ArrayList<>(players);
 
         while (true) {
             System.out.println("Please enter the path of the pack file: ");
@@ -58,6 +62,18 @@ public class CardGame {
             }
         }
 
+        for (int i = 0; i < players; i++) {
+            Deque<Card> deck = new LinkedList<>();
+            ArrayList<Card> hand = new ArrayList<>();
+
+            for (int j = 0; j < 4; j++) {
+                hand.add(pack.pop());
+                deck.push(pack.pop());
+            }
+
+            decks.add(deck);
+            hands.add(hand);
+        }
         System.out.println(pack.size());
     }
 }
