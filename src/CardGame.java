@@ -85,6 +85,17 @@ public class CardGame {
             decks.add(deck);
             hands.add(hand);
         }
-        System.out.println(pack.size());
+
+        ArrayList<Player> playersList = new ArrayList<>();
+        Player p;
+
+        for (int i = 0; i < players; i++) {
+            p = new Player(decks.get(i), decks.get((i+1)%players), hands.get(i));
+            playersList.add(p);
+        }
+
+        for (Player q : playersList) {
+            q.run();
+        }
     }
 }
