@@ -7,21 +7,30 @@ import java.util.Scanner;
 
 public class CardGame {
 
+    /**
+     * Reads a file, checks validity of values and converts the values into a stack of cards
+     * @param path The path to a file containing the list of values
+     * @param players The number of players in the game
+     * @return A stack of cards representing the pack
+     * @throws java.io.IOException If file not found
+     * @throws Exception Exceptions for invalid values and size
+     */
     private static Stack<Card> readPackFile(String path, int players) throws java.io.IOException, Exception {
         Scanner s = new Scanner(new File(path));
         ArrayList<Integer> values = new ArrayList<Integer>();
         Stack<Card> pack = new Stack<Card>();
         int a;
+        String next;
 
         while (s.hasNext()) {
-            if (s.hasNextInt()) {
-                a = s.nextInt();
+            try {
+                a = Integer.parseInt(s.next());
                 if (a >= 0) {
                     values.add(a);
                 } else {
                     throw new Exception("Invalid values");
                 }
-            } else {
+            } catch (Exception e) {
                 throw new Exception("Invalid values");
             }
         }
