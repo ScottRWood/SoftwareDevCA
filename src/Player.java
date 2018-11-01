@@ -27,7 +27,15 @@ public class Player extends Thread{
     }
 
     public void playGame(){
-        
+        boolean finished = false;
+
+        while(!finished){
+            takeTurn();
+        }
+
+        for (Player p : CardGame.playersList) {
+            p.interrupt();
+        }
     }
 
     public void run() {

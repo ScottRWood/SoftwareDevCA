@@ -9,6 +9,8 @@ public class CardGame {
 
     public static final int NUMBER_OF_CARDS_PER_HAND = 4;
 
+    public static ArrayList<Player> playersList;
+
     /**
      * Reads a file, checks validity of values and converts the values into a stack of cards
      * @param path The path to a file containing the list of values
@@ -86,7 +88,6 @@ public class CardGame {
             hands.add(hand);
         }
 
-        ArrayList<Player> playersList = new ArrayList<>();
         Player p;
 
         for (int i = 0; i < players; i++) {
