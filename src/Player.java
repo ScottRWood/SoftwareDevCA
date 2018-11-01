@@ -27,7 +27,15 @@ public class Player extends Thread{
     }
 
     private boolean checkIfFinished(){
-        return true;
+        boolean allEqual = true;
+
+        for (Card c : hand) {
+            if (!(c.getVal() == hand.get(0).getVal())){
+                allEqual = false;
+            }
+        }
+
+        return allEqual;
     }
 
     public void playGame(){

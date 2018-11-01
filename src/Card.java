@@ -5,4 +5,8 @@ public class Card {
     public Card (int i) {
         faceVal = i;
     }
+
+    public int getVal(){
+        return this.faceVal;
+    }
 }
