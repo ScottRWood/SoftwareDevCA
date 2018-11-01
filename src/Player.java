@@ -7,12 +7,14 @@ public class Player extends Thread{
     private Deque<Card> drawFrom;
     private Deque<Card> dropTo;
     private ArrayList<Card> hand;
+    private int playerNo;
 
-    public Player(String name, Deque<Card> drawFrom, Deque<Card> dropTo, ArrayList<Card> hand){
+    public Player(String name, int playerNo, Deque<Card> drawFrom, Deque<Card> dropTo, ArrayList<Card> hand){
         this.drawFrom = drawFrom;
         this.dropTo = dropTo;
         this.hand = hand;
         this.setName(name);
+        this.playerNo = playerNo;
     }
 
 
@@ -20,8 +22,23 @@ public class Player extends Thread{
      * Executes a turn in the game
      */
     public synchronized void takeTurn(){
+        boolean checkCardNum = true;
         hand.add(drawFrom.getFirst());
-        Card card = hand.get((int)(Math.random() * (CardGame.NUMBER_OF_CARDS_PER_HAND + 1)));
+        Card card = null;
+
+        while (checkCardNum) {
+            card = hand.get((int)(Math.random() * (CardGame.NUMBER_OF_CARDS_PER_HAND + 1)));
+
+            if (card.getVal() == this.playerNo) {
+                checkCardNum = true;
+            }
+
+            else {
+                checkCardNum = false;
+            }
+
+        }
+        
         dropTo.addLast(card);
         hand.remove(card);
     }
