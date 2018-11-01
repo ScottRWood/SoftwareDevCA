@@ -26,11 +26,16 @@ public class Player extends Thread{
         hand.remove(card);
     }
 
+    private boolean checkIfFinished(){
+        return true;
+    }
+
     public void playGame(){
         boolean finished = false;
 
         while(!finished){
             takeTurn();
+            finished = checkIfFinished();
         }
 
         for (Player p : CardGame.playersList) {
