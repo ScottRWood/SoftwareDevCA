@@ -2,16 +2,17 @@ import java.util.ArrayList;
 import java.util.Deque;
 
 
-public class Player implements Runnable{
+public class Player extends Thread{
 
     private Deque<Card> drawFrom;
     private Deque<Card> dropTo;
     private ArrayList<Card> hand;
 
-    public Player(Deque<Card> drawFrom, Deque<Card> dropTo, ArrayList<Card> hand){
+    public Player(String name, Deque<Card> drawFrom, Deque<Card> dropTo, ArrayList<Card> hand){
         this.drawFrom = drawFrom;
         this.dropTo = dropTo;
         this.hand = hand;
+        this.setName(name);
     }
 
 
@@ -26,9 +27,13 @@ public class Player implements Runnable{
     }
 
     public void playGame(){
+        
     }
 
     public void run() {
-        playGame();
+        while (true) {
+            System.out.println(Thread.currentThread().getName());
+        }
+        //playGame();
     }
 }

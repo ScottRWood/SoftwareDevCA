@@ -90,12 +90,12 @@ public class CardGame {
         Player p;
 
         for (int i = 0; i < players; i++) {
-            p = new Player(decks.get(i), decks.get((i+1)%players), hands.get(i));
+            p = new Player("Player " + Integer.toString(i+1), decks.get(i), decks.get((i+1)%players), hands.get(i));
             playersList.add(p);
         }
 
         for (Player q : playersList) {
-            q.run();
+            q.start();
         }
     }
 }
