@@ -7,6 +7,8 @@ import java.util.Scanner;
 
 public class CardGame {
 
+    public static final int NUMBER_OF_CARDS_PER_HAND = 4;
+
     /**
      * Reads a file, checks validity of values and converts the values into a stack of cards
      * @param path The path to a file containing the list of values
@@ -37,7 +39,7 @@ public class CardGame {
         
         s.close();
         
-        if (values.size()  == 8 * players) {
+        if (values.size()  == 2 * NUMBER_OF_CARDS_PER_HAND * players) {
             for (Integer i: values) {
                 pack.push(new Card(i));
                 System.out.println(i);
@@ -75,7 +77,7 @@ public class CardGame {
             Deque<Card> deck = new LinkedList<>();
             ArrayList<Card> hand = new ArrayList<>();
 
-            for (int j = 0; j < 4; j++) {
+            for (int j = 0; j < NUMBER_OF_CARDS_PER_HAND; j++) {
                 hand.add(pack.pop());
                 deck.push(pack.pop());
             }
