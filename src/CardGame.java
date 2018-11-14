@@ -68,7 +68,7 @@ public class CardGame {
             String path = reader.next();
 
             try {
-                pack = readPackFile("/Users/Scott/Desktop/SoftwareDevCA/src/pack.txt", players);
+                pack = readPackFile("/Users/Prince/SoftwareDevCA/src/pack.txt", players);
                 break;
             } catch (Exception e) {
                 System.out.println(e.getMessage());
@@ -91,12 +91,14 @@ public class CardGame {
         Player p;
 
         for (int i = 0; i < players; i++) {
-            p = new Player("Player " + Integer.toString(i+1), i, decks.get(i), decks.get((i+1)%players), hands.get(i));
+            p = new Player("Player " + Integer.toString(i+1), i, decks.get(i), decks.get((i+1)%players), hands.get(i), players);
             playersList.add(p);
         }
 
         for (Player q : playersList) {
             q.start();
         }
+
+
     }
 }

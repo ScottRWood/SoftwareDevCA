@@ -1,6 +1,8 @@
 import java.util.ArrayList;
 import java.util.Deque;
-
+import java.io.File;
+import java.io.FileWriter;
+import java.io.PrintWriter;
 
 public class Player extends Thread{
 
@@ -8,13 +10,15 @@ public class Player extends Thread{
     private Deque<Card> dropTo;
     private ArrayList<Card> hand;
     private int playerNo;
+    private int players;
 
-    public Player(String name, int playerNo, Deque<Card> drawFrom, Deque<Card> dropTo, ArrayList<Card> hand){
+    public Player(String name, int playerNo, Deque<Card> drawFrom, Deque<Card> dropTo, ArrayList<Card> hand, int players) {
         this.drawFrom = drawFrom;
         this.dropTo = dropTo;
         this.hand = hand;
         this.setName(name);
         this.playerNo = playerNo;
+        this.players = players;
     }
 
 
@@ -23,13 +27,16 @@ public class Player extends Thread{
      */
     public synchronized void takeTurn(){
         boolean checkCardNum = true;
-        hand.add(drawFrom.getFirst());
-        Card card = null;
+        Card card1 = drawFrom.getFirst();
+        Card card2 = null;
+        int deckNum = (this.playerNo+1)%this.players;
+
+        hand.add(card1);
 
         while (checkCardNum) {
-            card = hand.get((int)(Math.random() * (CardGame.NUMBER_OF_CARDS_PER_HAND + 1)));
+            card2 = hand.get((int)(Math.random() * (CardGame.NUMBER_OF_CARDS_PER_HAND + 1)));
 
-            if (card.getVal() == this.playerNo) {
+            if (card2.getVal() == this.playerNo) {
                 checkCardNum = true;
             }
 
@@ -38,9 +45,21 @@ public class Player extends Thread{
             }
 
         }
-        
-        dropTo.addLast(card);
-        hand.remove(card);
+
+        dropTo.addLast(card2);
+        hand.remove(card2);
+
+        FileWriter writer = new FileWriter(someFile);
+        PrintWriter printer = new PrintWriter(writer);
+
+        printer.print("Player " + this.playerNo + " draws a " + card1.getVal() + " from deck " + this.playerNo);
+        printer.print("Player " + this.playerNo + " discards a " + card2.getVal() + " to deck " + deckNum);
+        printer.print("Player " + this.playerNo + "'s current hand is " + hand);
+    }
+
+    public void createFile() {
+        File playerFile = new File("player_" + this.playerNo + ".txt");
+
     }
 
     private boolean checkIfFinished(){
@@ -58,6 +77,12 @@ public class Player extends Thread{
     public void playGame(){
         boolean finished = false;
 
+        FileWriter writer = new FileWriter(someFile);
+        PrintWriter printer = new PrintWriter(writer);
+
+        printer.print("Player " + this.playerNo + "'s initial hand is " + hand);
+
+
         while(!finished){
             takeTurn();
             finished = checkIfFinished();
@@ -69,6 +94,7 @@ public class Player extends Thread{
     }
 
     public void run() {
+        createFile();
         while (true) {
             System.out.println(Thread.currentThread().getName());
         }
