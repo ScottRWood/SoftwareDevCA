@@ -4,6 +4,8 @@ import java.util.Deque;
 import java.util.LinkedList;
 import java.util.Stack;
 import java.util.Scanner;
+import java.io.FileWriter;
+import java.io.PrintWriter;
 
 public class CardGame {
 
@@ -53,8 +55,17 @@ public class CardGame {
         return pack;
     }
 
+    public static File createDeckFile(int i) {
+        File deckFile = new File("deck_" + i + ".txt");
+
+        return deckFile;
+
+    }
+
     public static void main(String[] args) {
         Scanner reader = new Scanner(System.in);
+        
+
         Stack<Card> pack;
 
         System.out.println("Please enter the number of player: ");
@@ -97,6 +108,15 @@ public class CardGame {
 
         for (Player q : playersList) {
             q.start();
+        }
+
+        for (int i = 0, i < decks.size(); i++) {
+            FileWriter writer = new FileWriter(createDeckFile(i));
+            PrintWriter printer = new PrintWriter(writer);
+            
+            printer.print(deck.get(i));
+            printer.close();
+            
         }
 
 
