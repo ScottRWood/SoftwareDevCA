@@ -1,8 +1,6 @@
 import java.util.ArrayList;
 import java.io.*;
 import java.util.concurrent.BlockingDeque;
-import java.util.function.Consumer;
-
 
 public class Player extends Thread {
 
@@ -12,8 +10,6 @@ public class Player extends Thread {
     private int playerNo;
     private int turnsTaken = 0;
     private String name;
-    private volatile boolean running = true;
-
 
     public Player(String name, int playerNo, BlockingDeque<Card> drawFrom, BlockingDeque<Card> dropTo, ArrayList<Card> hand, int players) {
         this.drawFrom = drawFrom;
@@ -49,6 +45,13 @@ public class Player extends Thread {
                             checkCardNum = false;
                         }
 
+                        boolean allEqual = true;
+                        for (Card c : hand) {
+                            if(c.getVal() != hand.get(0).getVal())
+                                allEqual = false;
+                        }
+
+                        checkCardNum = !allEqual;
                     }
 
                     dropTo.putLast(card2);
@@ -77,10 +80,7 @@ public class Player extends Thread {
     public PrintWriter createPlayerFile() throws IOException {
         File playerFile = new File(this.name + "_output.txt");
         FileWriter writer = new FileWriter(playerFile);
-        PrintWriter printer = new PrintWriter(writer);
-
-        return printer;
-
+        return new PrintWriter(writer);
     }
 
     /**
@@ -113,7 +113,7 @@ public class Player extends Thread {
                 allEqual = false;
         }
 
-        if (allEqual == true && CardGame.gameWinner == 0) {
+        if (allEqual && CardGame.gameWinner == 0) {
             printer.println(this.name + " wins");
             System.out.println(this.name + " wins");
             CardGame.gameWinner = this.playerNo;
@@ -128,7 +128,6 @@ public class Player extends Thread {
      * @param printer The printer for the player file
      */
     public void playGame(PrintWriter printer) {
-        boolean finished = false;
 
         while (true) {
             if(checkIfWinnerExists(printer) || checkIfFinished(printer)){
@@ -140,6 +139,7 @@ public class Player extends Thread {
             try {
                 Thread.sleep(500);
             } catch (InterruptedException e){
+                e.printStackTrace();
             }
         }
 
@@ -171,7 +171,6 @@ public class Player extends Thread {
             for (Card c : hand) {
                 printer.print(c.getVal() + " ");
             }
-            ;
             printer.print("\n");
 
 

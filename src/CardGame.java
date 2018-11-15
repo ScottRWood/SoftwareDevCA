@@ -60,13 +60,9 @@ public class CardGame {
      *
      * @param i Represents the deck number
      * @return Printer for deck file
-     * @throws IOException
      */
-    public static File createDeckFile(int i) throws IOException {
-        File deckFile = new File("deck_" + i + ".txt");
-
-        return deckFile;
-
+    public static File createDeckFile(int i) {
+        return new File("deck_" + i + ".txt");
     }
 
     public static void main(String[] args) {
@@ -79,6 +75,8 @@ public class CardGame {
             players = reader.nextInt();
             if (players > 0) {
                 break;
+            } else {
+                System.out.println("Please enter valid number of players");
             }
         }
 
@@ -136,9 +134,7 @@ public class CardGame {
                 for (Card c : decks.get(i)) {
                     printer.print(c.getVal() + " ");
                 }
-                ;
                 printer.close();
-
             } catch (Exception e) {
                 System.out.print("Cannot find file");
             }

@@ -1,6 +1,6 @@
 public class Card {
 
-    private int faceVal;
+    private final int faceVal;
 
     public Card (int i) {
         faceVal = i;
