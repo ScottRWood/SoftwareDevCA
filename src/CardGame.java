@@ -88,7 +88,7 @@ public class CardGame {
             String path = reader.next();
 
             try {
-                pack = readPackFile("/Users/scottrichmond-wood/IdeaProjects/SoftwareDevCA/src/pack.txt", players);
+                pack = readPackFile(path, players);
                 break;
             } catch (Exception e) {
                 System.out.println(e.getMessage());
