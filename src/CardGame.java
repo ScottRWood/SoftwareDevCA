@@ -1,9 +1,9 @@
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Deque;
-import java.util.LinkedList;
 import java.util.Stack;
 import java.util.Scanner;
+import java.util.concurrent.BlockingDeque;
+import java.util.concurrent.LinkedBlockingDeque;
 
 
 public class CardGame {
@@ -11,6 +11,7 @@ public class CardGame {
     public static final int NUMBER_OF_CARDS_PER_HAND = 4;
 
     public static ArrayList<Player> playersList = new ArrayList<Player>();
+    public static int gameWinner = 0;
 
     /**
      * Reads a file, checks validity of values and converts the values into a stack of cards
@@ -22,10 +23,9 @@ public class CardGame {
      */
     private static Stack<Card> readPackFile(String path, int players) throws java.io.IOException, Exception {
         Scanner s = new Scanner(new File(path));
-        ArrayList<Integer> values = new ArrayList<Integer>();
-        Stack<Card> pack = new Stack<Card>();
+        ArrayList<Integer> values = new ArrayList<>();
+        Stack<Card> pack = new Stack<>();
         int a;
-        String next;
 
         while (s.hasNext()) {
             try {
@@ -70,7 +70,7 @@ public class CardGame {
         System.out.println("Please enter the number of player: ");
         int players = reader.nextInt();
 
-        ArrayList<Deque<Card>> decks = new ArrayList<>(players);
+        ArrayList<BlockingDeque<Card>> decks = new ArrayList<>(players);
         ArrayList<ArrayList<Card>> hands = new ArrayList<>(players);
 
         while (true) {
@@ -78,7 +78,7 @@ public class CardGame {
             String path = reader.next();
 
             try {
-                pack = readPackFile("/Users/Prince/SoftwareDevCA/src/pack.txt", players);
+                pack = readPackFile("/Users/scottrichmond-wood/IdeaProjects/SoftwareDevCA/src/pack.txt", players);
                 break;
             } catch (Exception e) {
                 System.out.println(e.getMessage());
@@ -86,12 +86,12 @@ public class CardGame {
         }
 
         for (int i = 0; i < players; i++) {
-            Deque<Card> deck = new LinkedList<>();
+            BlockingDeque<Card> deck = new LinkedBlockingDeque<>();
             ArrayList<Card> hand = new ArrayList<>();
 
             for (int j = 0; j < NUMBER_OF_CARDS_PER_HAND; j++) {
                 hand.add(pack.pop());
-                deck.addCard(pack.pop());
+                deck.add(pack.pop());
             }
 
             decks.add(deck);
