@@ -22,7 +22,7 @@ public class CardGame {
      * @throws java.io.IOException If file not found
      * @throws Exception           Exceptions for invalid values and size
      */
-    private static Stack<Card> readPackFile(String path, int players) throws java.io.IOException, Exception {
+    public static Stack<Card> readPackFile(String path, int players) throws java.io.IOException, Exception {
         Scanner s = new Scanner(new File(path));
         ArrayList<Integer> values = new ArrayList<>();
         Stack<Card> pack = new Stack<>();
