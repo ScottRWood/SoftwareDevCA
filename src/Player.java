@@ -45,13 +45,14 @@ public class Player extends Thread {
                             checkCardNum = false;
                         }
 
-                        boolean allEqual = true;
-                        for (Card c : hand) {
-                            if(c.getVal() != hand.get(0).getVal())
-                                allEqual = false;
+                        boolean allPrefferred = true;
+                        for (Card c : hand){
+                            if (c.getVal() != playerNo){
+                                allPrefferred = false;
+                            }
                         }
 
-                        checkCardNum = !allEqual;
+                        if (allPrefferred){ checkCardNum = false;}
                     }
 
                     dropTo.putLast(card2);
