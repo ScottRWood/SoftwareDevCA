@@ -6,6 +6,9 @@ public class Card {
         faceVal = i;
     }
 
+    /**
+     * @return The face value of the card
+     */
     public int getVal(){
         return this.faceVal;
     }

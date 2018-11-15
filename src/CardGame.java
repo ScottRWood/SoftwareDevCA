@@ -15,11 +15,12 @@ public class CardGame {
 
     /**
      * Reads a file, checks validity of values and converts the values into a stack of cards
-     * @param path The path to a file containing the list of values
+     *
+     * @param path    The path to a file containing the list of values
      * @param players The number of players in the game
      * @return A stack of cards representing the pack
      * @throws java.io.IOException If file not found
-     * @throws Exception Exceptions for invalid values and size
+     * @throws Exception           Exceptions for invalid values and size
      */
     private static Stack<Card> readPackFile(String path, int players) throws java.io.IOException, Exception {
         Scanner s = new Scanner(new File(path));
@@ -39,11 +40,11 @@ public class CardGame {
                 throw new Exception("Invalid values");
             }
         }
-        
+
         s.close();
-        
-        if (values.size()  == 2 * NUMBER_OF_CARDS_PER_HAND * players) {
-            for (Integer i: values) {
+
+        if (values.size() == 2 * NUMBER_OF_CARDS_PER_HAND * players) {
+            for (Integer i : values) {
                 pack.push(new Card(i));
                 //System.out.println(i);
             }
@@ -54,6 +55,13 @@ public class CardGame {
         return pack;
     }
 
+    /**
+     * Creates a deck file for holding the contents of said deck
+     *
+     * @param i Represents the deck number
+     * @return Printer for deck file
+     * @throws IOException
+     */
     public static File createDeckFile(int i) throws IOException {
         File deckFile = new File("deck_" + i + ".txt");
 
@@ -63,12 +71,16 @@ public class CardGame {
 
     public static void main(String[] args) {
         Scanner reader = new Scanner(System.in);
-        
-
         Stack<Card> pack;
+        int players;
 
-        System.out.println("Please enter the number of player: ");
-        int players = reader.nextInt();
+        while (true) {
+            System.out.println("Please enter the number of player: ");
+            players = reader.nextInt();
+            if (players > 0) {
+                break;
+            }
+        }
 
         ArrayList<BlockingDeque<Card>> decks = new ArrayList<>(players);
         ArrayList<ArrayList<Card>> hands = new ArrayList<>(players);
@@ -100,35 +112,37 @@ public class CardGame {
 
 
         for (int i = 0; i < players; i++) {
-            //Player p = new Player("Player " + Integer.toString(i+1), i, decks.get(i), decks.get((i+1)%players), hands.get(i), players);
-            if (i == 3) {
-                playersList.add(new Player("Player " + Integer.toString(i+1), i+1, decks.get(i), decks.get((i+1)%players), hands.get(i), players));
-            }
-            else {
-            playersList.add(new Player("Player " + Integer.toString(i+1), i+1, decks.get(i), decks.get((i+1)), hands.get(i), players));
-            }
-            
+            playersList.add(new Player("Player " + Integer.toString(i + 1), i + 1, decks.get(i), decks.get((i + 1) % players), hands.get(i), players));
         }
 
         for (Player q : playersList) {
             q.start();
         }
 
+        for (int i = 0; i < playersList.size(); i++) {
+            try {
+                playersList.get(i).join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
         for (int i = 0; i < decks.size(); i++) {
             try {
-                FileWriter writer = new FileWriter(createDeckFile(i+1));
+                FileWriter writer = new FileWriter(createDeckFile(i + 1));
                 PrintWriter printer = new PrintWriter(writer);
 
-                printer.print("deck " + (i+1) + " contents: ");
-                for (Card c : decks.get(i)) {printer.print(c.getVal() + " ");};
+                printer.print("deck " + (i + 1) + " contents: ");
+                for (Card c : decks.get(i)) {
+                    printer.print(c.getVal() + " ");
+                }
+                ;
                 printer.close();
 
-            }
-
-            catch (Exception e) {
+            } catch (Exception e) {
                 System.out.print("Cannot find file");
             }
-            
+
         }
 
 

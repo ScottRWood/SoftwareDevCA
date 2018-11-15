@@ -25,7 +25,7 @@ public class Player extends Thread {
 
 
     /**
-     * Executes a turn in the game
+     * Executes a turn in the game and writes to the file
      */
     public synchronized void takeTurn(PrintWriter printer) {
         boolean checkCardNum = true;
@@ -69,6 +69,11 @@ public class Player extends Thread {
         }
     }
 
+    /**
+     * Creates file to store player moves
+     * @return Printer for file
+     * @throws IOException
+     */
     public PrintWriter createPlayerFile() throws IOException {
         File playerFile = new File(this.name + "_output.txt");
         FileWriter writer = new FileWriter(playerFile);
@@ -78,6 +83,11 @@ public class Player extends Thread {
 
     }
 
+    /**
+     * Checks if any other player has won
+     * @param printer The printer for the player file
+     * @return boolean stating whether someone has won
+     */
     public boolean checkIfWinnerExists(PrintWriter printer) {
         boolean response = false;
         if (CardGame.gameWinner != 0) {
@@ -90,6 +100,11 @@ public class Player extends Thread {
 
     }
 
+    /**
+     * Checks if this player has finished and alerts CardGame class
+     * @param printer The printer for the player file
+     * @return boolean stating whether you've won
+     */
     private boolean checkIfFinished(PrintWriter printer) {
         boolean allEqual = true;
 
@@ -108,19 +123,19 @@ public class Player extends Thread {
 
     }
 
+    /**
+     * Plays the game
+     * @param printer The printer for the player file
+     */
     public void playGame(PrintWriter printer) {
         boolean finished = false;
 
         while (true) {
-            if(checkIfWinnerExists(printer)){
+            if(checkIfWinnerExists(printer) || checkIfFinished(printer)){
                 break;
             }
 
             takeTurn(printer);
-
-            if (checkIfFinished(printer)){
-                break;
-            }
 
             try {
                 Thread.sleep(500);
@@ -128,10 +143,25 @@ public class Player extends Thread {
             }
         }
 
+        int maxTurns = turnsTaken;
+
+        for (Player p : CardGame.playersList){
+            maxTurns = (p.getTurns() > maxTurns) ? p.getTurns() : maxTurns;
+        }
+
+        while (turnsTaken < maxTurns){
+            takeTurn(printer);
+        }
+
         System.out.println(turnsTaken);
     }
 
-
+    /**
+     * @return The number of turns player has taken
+     */
+    public int getTurns(){
+        return this.turnsTaken;
+    }
 
     public void run() {
         PrintWriter printer;
