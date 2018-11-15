@@ -13,7 +13,7 @@ public class Player extends Thread {
     private String name;
     private volatile boolean running = true;
 
-    public Player(String name, int playerNo, CardDeck drawFrom, CardDeck dropTo, ArrayList<Card> hand, int players) {
+    public Player(String name, int playerNo, Deque<Card> drawFrom, Deque<Card> dropTo, ArrayList<Card> hand, int players) {
         this.drawFrom = drawFrom;
         this.dropTo = dropTo;
         this.hand = hand;
@@ -34,7 +34,7 @@ public class Player extends Thread {
         int deckNum = ((this.playerNo)+1);
 
         hand.add(card1);
-        drawFrom.remove(card1)
+        drawFrom.remove(card1);
 
         while (checkCardNum) {
             card2 = hand.get((int)(Math.random() * (CardGame.NUMBER_OF_CARDS_PER_HAND + 1)));

@@ -70,8 +70,7 @@ public class CardGame {
         System.out.println("Please enter the number of player: ");
         int players = reader.nextInt();
 
-        //ArrayList<Deque<Card>> decks = new ArrayList<>(players);
-        ArrayList<CardDeck> decks = new ArrayList<CardDeck>()
+        ArrayList<Deque<Card>> decks = new ArrayList<>(players);
         ArrayList<ArrayList<Card>> hands = new ArrayList<>(players);
 
         while (true) {
@@ -87,7 +86,7 @@ public class CardGame {
         }
 
         for (int i = 0; i < players; i++) {
-            CardDeck deck = new CardDeck();
+            Deque<Card> deck = new LinkedList<>();
             ArrayList<Card> hand = new ArrayList<>();
 
             for (int j = 0; j < NUMBER_OF_CARDS_PER_HAND; j++) {
