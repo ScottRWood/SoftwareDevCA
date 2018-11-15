@@ -1,8 +1,7 @@
 import java.util.ArrayList;
 import java.util.Deque;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.PrintWriter;
+import java.io.*;
+
 
 public class Player extends Thread {
 
@@ -11,12 +10,14 @@ public class Player extends Thread {
     private ArrayList<Card> hand;
     private int playerNo;
     private int players;
+    private String name;
+    private volatile boolean running = true;
 
-    public Player(String name, int playerNo, Deque<Card> drawFrom, Deque<Card> dropTo, ArrayList<Card> hand, int players) {
+    public Player(String name, int playerNo, CardDeck drawFrom, CardDeck dropTo, ArrayList<Card> hand, int players) {
         this.drawFrom = drawFrom;
         this.dropTo = dropTo;
         this.hand = hand;
-        this.setName(name);
+        this.name = name;
         this.playerNo = playerNo;
         this.players = players;
     }
@@ -26,12 +27,14 @@ public class Player extends Thread {
      * Executes a turn in the game
      */
     public synchronized void takeTurn(PrintWriter printer){
+        System.out.println(this.name + " has taken a " + drawFrom.getLast().getVal());
         boolean checkCardNum = true;
-        Card card1 = drawFrom.getFirst();
+        Card card1 = drawFrom.get((int)(Math.random() * (CardGame.NUMBER_OF_CARDS_PER_HAND + 1)))
         Card card2 = null;
-        int deckNum = (this.playerNo+1)%this.players;
+        int deckNum = ((this.playerNo)+1);
 
         hand.add(card1);
+        drawFrom.remove(card1)
 
         while (checkCardNum) {
             card2 = hand.get((int)(Math.random() * (CardGame.NUMBER_OF_CARDS_PER_HAND + 1)));
@@ -46,27 +49,32 @@ public class Player extends Thread {
 
         }
 
-        dropTo.addLast(card2);
+        dropTo.add(card2);
         hand.remove(card2);
 
-        printer.print("Player " + this.playerNo + " draws a " + card1.getVal() + " from deck " + this.playerNo);
-        printer.print("Player " + this.playerNo + " discards a " + card2.getVal() + " to deck " + deckNum);
-        printer.print("Player " + this.playerNo + "'s current hand is " + hand);
+        printer.println(this.name + " draws a " + card1.getVal() + " from deck " + (this.playerNo));
+        printer.println(this.name + " discards a " + card2.getVal() + " to deck " + deckNum);
+        printer.print(this.name + "'s current hand is ");
+        for (Card c : hand) {printer.print(c.getVal() + " ");};
+        printer.print("\n");
     }
 
-    public File createPlayerFile() {
-        File playerFile = new File("player_" + this.playerNo + ".txt");
-        return playerFile;
+    public PrintWriter createPlayerFile() throws IOException {
+        File playerFile = new File(this.name + "_output.txt");
+        FileWriter writer = new FileWriter(playerFile);
+        PrintWriter printer = new PrintWriter(writer);
+
+        return printer;
 
     }
 
-    public boolean checkIfWinnerExists(PrintWriter printer); {
-        boolean response = false
+    public boolean checkIfWinnerExists(PrintWriter printer) {
+        boolean response = false;
 
         for (Player p : CardGame.playersList) {
             if (!p.isAlive()) {
-                 printer.print("Player " + p.playerNo + " has informed " + this.playerNo + " that Player " + 
-                    p.playerNo + " has won" );
+                 printer.println(p.name + " has informed " + this.name + " that " + 
+                    p.name  + " has won");
                  response = true;
             }
         }    
@@ -76,17 +84,26 @@ public class Player extends Thread {
     }
 
     private boolean checkIfFinished(PrintWriter printer){
-        boolean allEqual = true;
+        boolean allEqual = false;
 
-        for (Card c : hand) {
-            if (!(c.getVal() == hand.get(0).getVal())){
-                allEqual = false;
-                printer.print("Player " + this.playerNo + " wins");
-                System.out.println("Player " + this.playerNo + " wins");
-            }
+        //for (Card c : hand) {
+            //if (!(c.getVal() == hand.get(0).getVal())){
+                //allEqual = true;
+            //}
+        //}
+
+        allEqual = hand.stream().distinct().limit(2).count() <= 1;
+
+        if (allEqual == true) {
+            printer.println(this.name + " wins");
+            System.out.println(this.name + " wins");
+            return allEqual;
         }
 
-        return allEqual;
+        else {
+            return allEqual;
+        }
+
     }
 
     public void playGame(PrintWriter printer){
@@ -94,32 +111,53 @@ public class Player extends Thread {
 
         while(!finished){
             finished = checkIfFinished(printer);
-            finished = checkIfWinnerExists(printer);
+            if (finished == true) {
+                break;
+            }
+
             takeTurn(printer);
+
+            finished = checkIfWinnerExists(printer);
+            if (finished == true) {
+                break;
+            }
+           
+            
         }
 
-        //for (Player p : CardGame.playersList) {
-            //this.interrupt();
-        //}
+    
+        this.shutdown();
 
         
     }
 
+    public void shutdown() {
+        running = false;
+    }
+
     public void run() {
-        FileWriter writer = new FileWriter(createPlayerFile());
-        PrintWriter printer = new PrintWriter(writer);
+        PrintWriter printer;
+        try {
+            printer = createPlayerFile();
+            printer.print(this.name + "'s initial hand is ");
+            for (Card c : hand) {printer.print(c.getVal() + " ");};
+            printer.print("\n");
 
-        printer.print("Player " + this.playerNo + "'s initial hand is " + hand);
+            while (running) {
+                //System.out.println(Thread.currentThread().getName());
+                playGame(printer);
 
-        while (true) {
-            System.out.println(Thread.currentThread().getName());
+            }
+
+            printer.println(this.name  + " exits");
+            printer.println(this.name + "'s final hand: ");
+            for (Card c : hand) {printer.print(c.getVal() + " ");};
+            printer.print("\n");
+            printer.close();
         }
-
-        //playGame(printer);
-
-
-        printer.print("Player " + this.playerNo + " exits");
-        printer.print("Player " + this.playerNo + "'s final hand: " + hand);
-        printer.close();
+        catch (IOException e) {
+            System.out.println("No file found");
+        }
+        
     }
 }

@@ -1,17 +1,16 @@
-import java.io.File;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.Stack;
 import java.util.Scanner;
-import java.io.FileWriter;
-import java.io.PrintWriter;
+
 
 public class CardGame {
 
     public static final int NUMBER_OF_CARDS_PER_HAND = 4;
 
-    public static ArrayList<Player> playersList;
+    public static ArrayList<Player> playersList = new ArrayList<Player>();
 
     /**
      * Reads a file, checks validity of values and converts the values into a stack of cards
@@ -46,7 +45,7 @@ public class CardGame {
         if (values.size()  == 2 * NUMBER_OF_CARDS_PER_HAND * players) {
             for (Integer i: values) {
                 pack.push(new Card(i));
-                System.out.println(i);
+                //System.out.println(i);
             }
         } else {
             throw new Exception("Invalid size");
@@ -55,7 +54,7 @@ public class CardGame {
         return pack;
     }
 
-    public static File createDeckFile(int i) {
+    public static File createDeckFile(int i) throws IOException {
         File deckFile = new File("deck_" + i + ".txt");
 
         return deckFile;
@@ -71,7 +70,8 @@ public class CardGame {
         System.out.println("Please enter the number of player: ");
         int players = reader.nextInt();
 
-        ArrayList<Deque<Card>> decks = new ArrayList<>(players);
+        //ArrayList<Deque<Card>> decks = new ArrayList<>(players);
+        ArrayList<CardDeck> decks = new ArrayList<CardDeck>()
         ArrayList<ArrayList<Card>> hands = new ArrayList<>(players);
 
         while (true) {
@@ -87,35 +87,48 @@ public class CardGame {
         }
 
         for (int i = 0; i < players; i++) {
-            Deque<Card> deck = new LinkedList<>();
+            CardDeck deck = new CardDeck();
             ArrayList<Card> hand = new ArrayList<>();
 
             for (int j = 0; j < NUMBER_OF_CARDS_PER_HAND; j++) {
                 hand.add(pack.pop());
-                deck.push(pack.pop());
+                deck.addCard(pack.pop());
             }
 
             decks.add(deck);
             hands.add(hand);
         }
 
-        Player p;
 
         for (int i = 0; i < players; i++) {
-            p = new Player("Player " + Integer.toString(i+1), i, decks.get(i), decks.get((i+1)%players), hands.get(i), players);
-            playersList.add(p);
+            //Player p = new Player("Player " + Integer.toString(i+1), i, decks.get(i), decks.get((i+1)%players), hands.get(i), players);
+            if (i == 3) {
+                playersList.add(new Player("Player " + Integer.toString(i+1), i+1, decks.get(i), decks.get((i+1)%players), hands.get(i), players));
+            }
+            else {
+            playersList.add(new Player("Player " + Integer.toString(i+1), i+1, decks.get(i), decks.get((i+1)), hands.get(i), players));
+            }
+            
         }
 
         for (Player q : playersList) {
             q.start();
         }
 
-        for (int i = 0, i < decks.size(); i++) {
-            FileWriter writer = new FileWriter(createDeckFile(i));
-            PrintWriter printer = new PrintWriter(writer);
-            
-            printer.print(deck.get(i));
-            printer.close();
+        for (int i = 0; i < decks.size(); i++) {
+            try {
+                FileWriter writer = new FileWriter(createDeckFile(i+1));
+                PrintWriter printer = new PrintWriter(writer);
+
+                printer.print("deck " + (i+1) + " contents: ");
+                for (Card c : decks.get(i)) {printer.print(c.getVal() + " ");};
+                printer.close();
+
+            }
+
+            catch (Exception e) {
+                System.out.print("Cannot find file");
+            }
             
         }
 
