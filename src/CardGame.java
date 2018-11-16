@@ -10,6 +10,9 @@ public class CardGame {
 
     public static final int NUMBER_OF_CARDS_PER_HAND = 4;
 
+    private static final int MIN_PLAYERS = 1;
+    private static final int MAX_PLAYERS = 10000;
+
     public static ArrayList<Player> playersList = new ArrayList<Player>();
     public static int gameWinner = 0;
 
@@ -73,7 +76,7 @@ public class CardGame {
         while (true) {
             System.out.println("Please enter the number of player: ");
             players = reader.nextInt();
-            if (players > 0) {
+            if (players >= MIN_PLAYERS && players <= MAX_PLAYERS) {
                 break;
             } else {
                 System.out.println("Please enter valid number of players");
