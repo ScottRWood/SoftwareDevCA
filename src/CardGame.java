@@ -19,9 +19,9 @@ public class CardGame {
     /**
      * Reads a file, checks validity of values and converts the values into a stack of cards
      *
-     * @param path    The path to a file containing the list of values
-     * @param players The number of players in the game
-     * @return A stack of cards representing the pack
+     * @param path                 The path to a file containing the list of values
+     * @param players              The number of players in the game
+     * @return                     A stack of cards representing the pack
      * @throws java.io.IOException If file not found
      * @throws Exception           Exceptions for invalid values and size
      */
@@ -61,7 +61,7 @@ public class CardGame {
     /**
      * Creates a deck file for holding the contents of said deck
      *
-     * @param i Represents the deck number
+     * @param  i Represents the deck number
      * @return Printer for deck file
      */
     public static File createDeckFile(int i) {
