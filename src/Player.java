@@ -106,7 +106,7 @@ public class Player extends Thread {
      * @param printer The printer for the player file
      * @return boolean stating whether you've won
      */
-    private boolean checkIfFinished(PrintWriter printer) {
+    public boolean checkIfFinished(PrintWriter printer) {
         boolean allEqual = true;
 
         for (Card c : hand) {
@@ -153,8 +153,6 @@ public class Player extends Thread {
         while (turnsTaken < maxTurns){
             takeTurn(printer);
         }
-
-        System.out.println(turnsTaken);
     }
 
     /**

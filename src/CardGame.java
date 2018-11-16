@@ -74,7 +74,7 @@ public class CardGame {
         int players;
 
         while (true) {
-            System.out.println("Please enter the number of player: ");
+            System.out.println("Please enter the number of players: ");
             players = reader.nextInt();
             if (players >= MIN_PLAYERS && players <= MAX_PLAYERS) {
                 break;
@@ -91,7 +91,7 @@ public class CardGame {
             String path = reader.next();
 
             try {
-                pack = readPackFile("/Users/scottrichmond-wood/IdeaProjects/SoftwareDevCA/src/pack.txt", players);
+                pack = readPackFile(path, players);
                 break;
             } catch (Exception e) {
                 System.out.println(e.getMessage());
